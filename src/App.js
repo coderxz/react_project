@@ -1,10 +1,11 @@
-export default class App extends React.Component{
+import React,{Component} from 'react';
+import CounterContainer from './containers/counter_container'
+export default class App extends Component{
   render() {
-    return (
+    return(
       <div>
-        App
+        <CounterContainer/>
       </div>
     )
   }
- }
-
+}
