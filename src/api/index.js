@@ -10,3 +10,5 @@ export const reqWeather = () => axios.get(`http://wthrcdn.etouch.cn/weather_mini
 export const reqAddCategory = (categoryName) => axios.post(`${BASE_URL}/manage/category/add`,categoryName)
 // 修改分类
 export const reqUpDateCategory = (categoryId,categoryName) => axios.post(`${BASE_URL}/manage/category/update`,{categoryId,categoryName})
+//商品分页
+export const reqProductList = (pageNum,pageSize) => axios.get(`${BASE_URL}/manage/product/list`,{params:{pageNum,pageSize}})
