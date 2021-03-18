@@ -1,3 +1,5 @@
 export const SAVE_USER_INFO = 'save_user_info'
 export const DELETE_USER_INFO = 'delete_user_inf'
 export const SET_TITLE = 'set_title'
+export const SAVE_PRODUCT_INFO = 'save_product_info'
+export const SAVE_CATEGORY_INFO = 'save_category_info'

@@ -91,10 +91,10 @@ class Header extends Component {
   //全屏
   fullScreen = () => {
     screenfull.toggle();
-
   }
   getTitle = () => {
-    const path = this.props.location.pathname.split('/').reverse()[0]
+    const {pathname} = this.props.location
+    const path = pathname.indexOf('product') !== -1 ? 'product' : pathname.split('/').reverse()[0]
     let title = ''
     menuList.forEach((item)=>{
       if (item.children instanceof Array){

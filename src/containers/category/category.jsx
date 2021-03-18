@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux'
 import {reqCategoryList} from '../../api/index'
 import {Card, Button, Icon, Table, message, Modal, Input, Form} from 'antd';
 import {PAGE_SIZE} from '../../config/index'
-import {reqAddCategory,reqUpDateCategory} from '../../api/'
+import {saveCategoryInfo} from '../../redux/actions/category_action'
+import {reqAddCategory, reqUpDateCategory} from '../../api/'
 
 const {Item} = Form;
 
+@connect(
+  state => ({info:state.userInfo}),
+  {saveCategoryInfo}
+)
 @Form.create()
 class Category extends Component {
   componentDidMount() {
@@ -17,8 +23,8 @@ class Category extends Component {
     visible: false,
     poreType: '',
     loading: true,
-    categoryName:'',
-    categoryId:''
+    categoryName: '',
+    categoryId: ''
   }
   showAdd = () => {
     this.setState({
@@ -27,16 +33,16 @@ class Category extends Component {
     });
   };
   showUpData = (item) => {
-    const {_id,name} = item
+    const {_id, name} = item
     this.setState({
       poreType: 'updata',
       visible: true,
-      categoryName:name,
-      categoryId:_id
+      categoryName: name,
+      categoryId: _id
     });
   };
   // 添加分类
-  addCategory = async (values)=>{
+  addCategory = async (values) => {
     // 添加逻辑
     const result = await reqAddCategory(values)
     const {status, msg} = result
@@ -53,16 +59,16 @@ class Category extends Component {
     }
   }
   // 修改分类
-  upDateCategory = async(values) =>{
+  upDateCategory = async (values) => {
     // 修改逻辑
     const categoryName = values.categoryName
-    if (this.state.categoryName === values.categoryName){
+    if (this.state.categoryName === values.categoryName) {
       message.warning('分类名称未改变,请重新输入!')
       return
     }
-    const result = await reqUpDateCategory(this.state.categoryId,categoryName)
-    const {status,msg} = result;
-    if (status === 0){
+    const result = await reqUpDateCategory(this.state.categoryId, categoryName)
+    const {status, msg} = result;
+    if (status === 0) {
       message.success('更新分类成功!')
       await this.getCategoryList()
       this.setState({
@@ -70,10 +76,10 @@ class Category extends Component {
       });
       this.props.form.resetFields()
       this.setState({
-        categoryName:''
+        categoryName: ''
       })
     }
-    if (status === 1){
+    if (status === 1) {
       message.error(msg)
     }
 
@@ -81,12 +87,12 @@ class Category extends Component {
   // 添加修改逻辑
   handleOk = (e) => {
     e.preventDefault();
-    this.props.form.validateFields(async(err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
         const {poreType} = this.state
         if (poreType === 'updata') await this.upDateCategory(values)
         if (poreType === 'add') await this.addCategory(values)
-      }else{
+      } else {
         message.warning('输入有误,请重新输入!')
       }
     });
@@ -95,7 +101,7 @@ class Category extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      categoryName:''
+      categoryName: ''
     });
     this.props.form.resetFields()
   };
@@ -108,6 +114,7 @@ class Category extends Component {
         categoryList: data.reverse(),
         loading: false
       })
+      this.props.saveCategoryInfo(data)
     } else {
       message.error(msg)
       this.setState({
@@ -129,7 +136,11 @@ class Category extends Component {
       {
         title: '操作',
         key: 'age',
-        render: (item) => {return (<Button type='link' onClick={() => {this.showUpData(item)}}>修改分类</Button>)},
+        render: (item) => {
+          return (<Button type='link' onClick={() => {
+            this.showUpData(item)
+          }}>修改分类</Button>)
+        },
         width: '25%',
         align: 'center',
       },
@@ -142,7 +153,7 @@ class Category extends Component {
             dataSource={dataSource}
             columns={columns}
             rowKey="_id"
-            pagination={{pageSize: PAGE_SIZE,showQuickJumper:true}}
+            pagination={{pageSize: PAGE_SIZE, showQuickJumper: true}}
             loading={this.state.loading}
           />
         </Card>
@@ -158,7 +169,7 @@ class Category extends Component {
             <Item>
               {getFieldDecorator('categoryName', {
                 rules: [{required: true, message: '分类名必填!'},],
-                initialValue:this.state.categoryName
+                initialValue: this.state.categoryName
               })(
                 <Input
                   placeholder="分类名称"
